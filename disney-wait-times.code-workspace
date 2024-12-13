@@ -1,0 +1,15 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.autoSave": "off",
+        "python.defaultInterpreterPath": "python",
+        "files.exclude": {
+            "**/__pycach__/": true,
+            "**/*.pyc": true
+        }
+    }
+}
