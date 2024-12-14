@@ -1,140 +1,78 @@
 import { useState, useEffect } from "react";
-import { fetchParkData, fetchRideData } from "../services/apiService";
-
-interface Ride {
-  id: number;
-  name: string;
-  wait_time: number;
-  is_open: boolean;
-  park_id: number; // Links rides to parks
-}
-
-interface Park {
-  id: number;
-  name: string;
-  enabled: boolean; // Tracks if the park is selected
-}
+import { mockParks } from "../data/mockData";
 
 const ParksRides = () => {
-  const [parks, setParks] = useState<Park[]>([]);
-  const [rides, setRides] = useState<Ride[]>([]);
-  const [filteredRides, setFilteredRides] = useState<Ride[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [parks] = useState(mockParks);
+  const [selectedParks, setSelectedParks] = useState<string[]>([]);
+  const [selectedRides, setSelectedRides] = useState<{ [parkId: string]: string[] }>({});
 
+  // Load selections from localStorage on component mount
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log("Fetching parks and rides...");
-        const parkData = await fetchParkData();
-        console.log("Parks fetched:", parkData);
-  
-        const rideData = await fetchRideData();
-        console.log("Rides fetched:", rideData);
-  
-        const parksWithState = parkData.map((park: Park) => ({
-          ...park,
-          enabled: false,
-        }));
-  
-        setParks(parksWithState);
-        setRides(rideData);
-      } catch (err) {
-        console.error("Error fetching parks and rides:", err);
-        setError("Failed to load parks and rides data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchData();
+    const storedParks = localStorage.getItem("selectedParks");
+    const storedRides = localStorage.getItem("selectedRides");
+    if (storedParks) setSelectedParks(JSON.parse(storedParks));
+    if (storedRides) setSelectedRides(JSON.parse(storedRides));
   }, []);
-  
 
-  const togglePark = (parkId: number) => {
-    // Toggle the park's enabled state
-    const updatedParks = parks.map((park) =>
-      park.id === parkId ? { ...park, enabled: !park.enabled } : park
-    );
-    setParks(updatedParks);
-
-    // Update filtered rides based on enabled parks
-    const enabledParkIds = updatedParks
-      .filter((park) => park.enabled)
-      .map((park) => park.id);
-
-    const updatedFilteredRides = rides.filter((ride) =>
-      enabledParkIds.includes(ride.park_id)
-    );
-    setFilteredRides(updatedFilteredRides);
+  // Toggle park selection and persist it in localStorage
+  const toggleParkSelection = (parkId: string) => {
+    const updatedParks = selectedParks.includes(parkId)
+      ? selectedParks.filter((id) => id !== parkId)
+      : [...selectedParks, parkId];
+    setSelectedParks(updatedParks);
+    localStorage.setItem("selectedParks", JSON.stringify(updatedParks));
   };
 
-  const toggleRide = (rideId: number) => {
-    // Toggle a ride's visibility in the filtered list
-    setFilteredRides((prevRides) =>
-      prevRides.map((ride) =>
-        ride.id === rideId ? { ...ride, is_open: !ride.is_open } : ride
-      )
-    );
+  // Toggle ride selection for a specific park and persist it
+  const toggleRideSelection = (parkId: string, rideId: string) => {
+    const updatedRides = {
+      ...selectedRides,
+      [parkId]: selectedRides[parkId]?.includes(rideId)
+        ? selectedRides[parkId].filter((id) => id !== rideId)
+        : [...(selectedRides[parkId] || []), rideId],
+    };
+    setSelectedRides(updatedRides);
+    localStorage.setItem("selectedRides", JSON.stringify(updatedRides));
   };
-
-  if (loading) {
-    return <div>Loading parks and rides data...</div>;
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
 
   return (
     <div className="max-w-4xl mx-auto py-8">
-      <h1 className="text-4xl font-bold mb-6 text-center text-blue-800">
-        Parks & Rides Configuration
-      </h1>
-
-      {/* Parks Section */}
-      <div>
-        <h2 className="text-2xl font-semibold text-blue-600 mb-4">Parks</h2>
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {parks.map((park) => (
-            <li key={park.id} className="flex items-center gap-4 p-4 shadow">
-              <span className="text-lg">{park.name}</span>
-              <button
-                onClick={() => togglePark(park.id)}
-                className={`px-4 py-2 rounded ${
-                  park.enabled ? "bg-green-600 text-white" : "bg-gray-300"
-                }`}
-              >
-                {park.enabled ? "Enabled" : "Disabled"}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Rides Section */}
-      <div className="mt-8">
-        <h2 className="text-2xl font-semibold text-blue-600 mb-4">Rides</h2>
-        {filteredRides.length > 0 ? (
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredRides.map((ride) => (
-              <li key={ride.id} className="flex items-center gap-4 p-4 shadow">
-                <span className="text-lg">{ride.name}</span>
-                <button
-                  onClick={() => toggleRide(ride.id)}
-                  className={`px-4 py-2 rounded ${
-                    ride.is_open ? "bg-green-600 text-white" : "bg-gray-300"
+      <h1 className="text-4xl font-bold mb-6 text-center text-blue-800">Parks & Rides</h1>
+      <ul className="space-y-4">
+        {parks.map((park) => (
+          <li key={park.id} className="p-4 shadow rounded-lg bg-white border">
+            {/* Park Header with Checkbox */}
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-semibold">{park.name}</h2>
+              <input
+                type="checkbox"
+                checked={selectedParks.includes(park.id)}
+                onChange={() => toggleParkSelection(park.id)}
+                className="w-6 h-6"
+              />
+            </div>
+            {/* Rides List */}
+            <ul className="mt-4 pl-4">
+              {park.rides.map((ride) => (
+                <li
+                  key={ride.id}
+                  className={`py-2 flex items-center ${
+                    ride.is_open ? "text-green-700" : "text-red-700"
                   }`}
                 >
-                  {ride.is_open ? "Visible" : "Hidden"}
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500">No rides available for the selected parks.</p>
-        )}
-      </div>
+                  <span className="flex-1">{ride.name} ({ride.is_open ? "Open" : "Closed"})</span>
+                  <input
+                    type="checkbox"
+                    checked={selectedRides[park.id]?.includes(ride.id) || false}
+                    onChange={() => toggleRideSelection(park.id, ride.id)}
+                    className="w-6 h-6"
+                  />
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
