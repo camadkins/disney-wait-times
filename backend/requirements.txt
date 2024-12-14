@@ -1,0 +1,19 @@
+# Core libraries
+flask==2.2.5               # For serving the backend API
+flask-cors==3.0.10         # To enable Cross-Origin Resource Sharing (CORS)
+requests==2.31.0           # For handling HTTP requests
+
+# Optional for logging and debugging
+python-dotenv==1.0.0       # For managing environment variables
+gunicorn==21.0.1           # For deploying the Flask app (production)
+
+# If using a database (adjust for your database type)
+sqlalchemy==2.0.6          # For database ORM
+psycopg2-binary==2.9.7     # For PostgreSQL
+
+# Testing and development
+pytest==7.4.0              # For unit testing
+pytest-flask==1.2.0        # Flask-specific testing
+
+# Data handling (if needed)
+pandas==2.1.1              # For data manipulation
