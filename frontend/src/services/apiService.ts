@@ -1,21 +1,62 @@
-export const fetchParksData = async (): Promise<any[]> => {
-  return [
-    { id: 1, name: "Magic Kingdom", isEnabled: true },
-    { id: 2, name: "Epcot", isEnabled: false },
-    { id: 3, name: "Hollywood Studios", isEnabled: true },
-    { id: 4, name: "Animal Kingdom", isEnabled: false },
-  ];
+const BASE_URL = "http://127.0.0.1:5000"; // Flask's default address
+
+export const fetchParks = async (): Promise<any> => {
+  try {
+    const response = await fetch(`${BASE_URL}/parks`);
+    if (!response.ok) {
+      throw new Error(`Error fetching parks: ${response.statusText}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching parks:", error);
+    throw error;
+  }
 };
 
-export const fetchRidesData = async (): Promise<any[]> => {
-  return [
-    { id: 101, park_id: 1, name: "Space Mountain", wait_time: 30, is_open: true },
-    { id: 102, park_id: 1, name: "Pirates of the Caribbean", wait_time: 15, is_open: true },
-    { id: 201, park_id: 2, name: "Test Track", wait_time: 45, is_open: false },
-    { id: 202, park_id: 2, name: "Soarin'", wait_time: 20, is_open: true },
-    { id: 301, park_id: 3, name: "Tower of Terror", wait_time: 50, is_open: true },
-    { id: 302, park_id: 3, name: "Rock 'n' Roller Coaster", wait_time: 60, is_open: true },
-    { id: 401, park_id: 4, name: "Avatar Flight of Passage", wait_time: 70, is_open: false },
-    { id: 402, park_id: 4, name: "Expedition Everest", wait_time: 25, is_open: true },
-  ];
+export const fetchRidesByPark = async (parkId: number): Promise<any> => {
+  try {
+    const response = await fetch(`${BASE_URL}/rides/${parkId}`); // Removed extra `}`
+    if (!response.ok) {
+      throw new Error(`Error fetching rides for park ${parkId}: ${response.statusText}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error(`Error fetching rides for park ${parkId}:`, error);
+    throw error;
+  }
+};
+
+export const saveSelections = async (selections: {
+  parks: Record<number, boolean>;
+  rides: Record<number, boolean>;
+}): Promise<void> => {
+  try {
+    const response = await fetch(`${BASE_URL}/update-selections`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(selections),
+    });
+    if (!response.ok) {
+      throw new Error(`Error saving selections: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error("Failed to save selections:", error);
+    throw error;
+  }
+};
+
+
+export const fetchSelections = async (): Promise<any> => {
+  try {
+    const response = await fetch(`${BASE_URL}/fetch-selections`);
+    if (!response.ok) {
+      throw new Error(`Error fetching selections: ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching selections:", error);
+    throw error;
+  }
 };

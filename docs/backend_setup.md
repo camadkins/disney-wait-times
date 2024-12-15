@@ -1,81 +1,126 @@
-# Backend Setup and Architecture
+# Backend Setup Documentation
 
-## Overview
+This document outlines the structure, setup, and configuration of the backend system for the Interactive Raspberry Pi Display.
 
-The backend handles:
+---
 
-1. Fetching data from the Queue-Times API.
-2. Parsing and formatting the data.
-3. Logging system events.
-4. Caching data locally for reliability.
+## **Overview**
 
-## Folder Structure
+The backend is responsible for:
 
-``` bash
+- Fetching real-time Disney park wait times from the Queue-Times API.
+- Providing API endpoints for the frontend Dashboard and Display.
+- Handling persistent storage for park and ride selections.
+- Logging system events and errors.
 
+---
+
+## **Folder Structure**
+
+```bash
 backend/
-├── **init**.py          # Marks backend as a package
-├── api_handler.py       # Handles API requests
-├── config.py            # Stores environment-specific settings
-├── data_parser.py       # (To be implemented) Parses and formats API data
-├── logger.py            # Manages logging
-├── cache/               # Handles caching logic
-│   ├── **init**.py
-│   └── cache_handler.py
-├── logs/                # Stores backend logs
-│   └── backend.log
-
+├── app.py              # Main Flask application.
+├── api_handler.py      # Handles interactions with the Queue-Times API.
+├── cache_handler.py    # Manages local caching of API responses.
+├── logger.py           # Centralized logging utility.
+├── tests/              # Unit tests for backend modules.
+│   ├── test_api.py     # Tests for API fetching and error handling.
+│   ├── test_cache.py   # Tests for caching functionality.
+│   └── test_app.py     # Tests for Flask endpoints.
+├── requirements.txt    # Python dependencies.
+└── config.py           # Configuration file for environment variables.
 ```
 
-## Modules
+---
 
-### 1. `api_handler.py`
+## **Setup Instructions**
 
-- Fetches data from the Queue-Times API.
-- Implements retry logic.
-- Saves successful API responses to the cache.
-- Loads cached data if API requests fail.
+### **1. Install Python Dependencies**
 
-### 2. `config.py`
+1. Navigate to the `backend/` directory:
 
-- Stores environment-specific settings such as:
-  - API Base URL
-  - Cache paths
-  - Log file paths
-  - Retry settings
+   ```bash
+   cd backend
+   ```
 
-### 3. `logger.py`
+2. Install dependencies:
 
-- Configures and manages logging.
-- Logs messages with different levels (INFO, DEBUG, WARNING, ERROR).
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### 4. `cache/cache_handler.py`
+### **2. Environment Variables**
 
-- Saves and loads API responses to/from a JSON cache file.
-- Ensures cached data is used if API fails.
+Create a `.env` file in the `backend/` directory to configure environment-specific settings. Example:
 
-## Testing
-
-Run tests using:
-
-```bash
-python -m unittest discover tests
+```env
+FLASK_ENV=development
+FLASK_DEBUG=1
+API_BASE_URL=https://queue-times-api-url.com
+CACHE_TTL=3600  # Cache Time-To-Live in seconds
 ```
 
-Unit tests are located in the `tests/` directory.
+### **3. Running the Server**
 
-## Backend Development Notes
+1. Start the Flask development server:
 
-## Running Python Backend Modules
+   ```bash
+   python -m flask run
+   ```
 
-### Import Issue Fix
+2. The server will be accessible at:
 
-When running backend modules directly, use the `-m` flag to resolve `ModuleNotFoundError`. This ensures Python correctly resolves relative imports.
+   ```bash
+   http://127.0.0.1:5000/
+   ```
 
-#### Example
+---
 
-```bash
-python -m backend.api_handler
-```
+## **Backend Modules**
 
-Avoid running scripts directly like python backend/api_handler.py as it may fail due to Python's import mechanics.
+### **1. `app.py`**
+
+- Entry point for the Flask application.
+- Defines API endpoints for parks, rides, and selections.
+
+### **2. `api_handler.py`**
+
+- Handles API requests to the Queue-Times API.
+- Implements retries and error handling to ensure reliability.
+
+### **3. `cache_handler.py`**
+
+- Manages local caching of API responses.
+- Uses the filesystem to store cached data and reduce unnecessary API calls.
+
+### **4. `logger.py`**
+
+- Logs system events, errors, and API call statuses.
+- Supports file-based logging with configurable verbosity.
+
+### **5. `tests/`**
+
+- Contains unit tests for all backend modules.
+- Uses `unittest` framework for testing.
+
+---
+
+## **Endpoints**
+
+See [`backend_endpoints.md`](backend_endpoints.md) for detailed documentation of available endpoints.
+
+---
+
+## **Development Notes**
+
+- **Error Handling**: All backend functions include robust error handling and logging to ensure reliability.
+- **CORS**: Configured using Flask-CORS to support requests from the frontend hosted on a different domain.
+- **Cache**: Cached data is used as a fallback in case of API failures.
+
+---
+
+## **Future Enhancements**
+
+- Add support for advanced statistics and analytics endpoints.
+- Integrate user authentication for secure API access.
+- Expand caching functionality to support in-memory storage for faster responses.

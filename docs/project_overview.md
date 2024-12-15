@@ -18,7 +18,10 @@ To create an interactive display system for Disney park wait times, combining so
 - Pull live wait time data from the Queue-Times API.
 - Dynamically showcase data in a styled grid layout.
 - Implement themes for holidays/events (e.g., Christmas, Halloween).
-- Use an animated constellation-style loading screen.
+- Use an animated constellation-style loading screen for:
+  - Raspberry Pi boot sequence.
+  - Manual display restarts triggered from the Control Panel.
+  - Display page transitions.
 - Automatically update displayed data at configurable intervals.
 - Store API responses locally to handle failures gracefully by:
   - Using the last successful API response if the API fails.
@@ -29,46 +32,54 @@ To create an interactive display system for Disney park wait times, combining so
 #### 2. **Web Control Panel**
 
 - **Park & Ride Management**:
-  - Enable/disable parks and individual rides.
-  - Fine-tune displayed information (e.g., include Lightning Lane times).
+  - Enable/disable parks and individual rides with real-time syncing to Display.
+  - Persist settings across sessions.
   - Pull and display the full park list from the API with checkboxes for selection.
-  - Allow Admins to configure which parks and rides are pulled and displayed.
-- **System Management**:
-  - Restart Raspberry Pi or display program.
-  - View system stats (e.g., memory usage, network performance).
 - **Theming**:
   - Switch between day/night modes.
   - Apply seasonal themes.
+- **System Management**:
+  - Restart Raspberry Pi or display program remotely.
+  - View system stats (e.g., memory usage, network performance).
 - **User Management**:
   - Create, edit, and delete users.
   - Admin and Editor roles with defined permissions.
 
 #### 3. **Statistics and Notifications**
 
-- View historical stats:
+- **Historical stats**:
   - API call success/failure rates.
   - System resource usage.
-- Notification system:
+- **Notification system**:
   - Categorize notifications by priority (e.g., urgent, info).
   - Enable/disable specific notifications.
 
 #### 4. **Future Features**
 
 - Interactive park maps.
-- Advanced notifications for system errors and updates.
 - Modular widgets for the dashboard to allow customization.
+- Advanced notifications for system errors and updates.
 
 ---
 
 ### **Project Structure**
 
-``` bash
+```bash
 project/
 ├── backend/          # Backend API handling and data processing.
+│   ├── app.py        # Flask app handling API requests.
+│   ├── tests/        # Unit tests for backend functionality.
 ├── frontend/         # Web dashboard and display interface.
+│   ├── src/
+│   │   ├── components/  # Reusable React components.
+│   │   ├── pages/       # Route-specific React components.
+│   │   ├── styles/      # Global and module-specific stylesheets.
+│   │   └── utils/       # Utility functions and helpers.
 ├── raspberry_pi/     # Raspberry Pi setup scripts and configurations.
+│   ├── boot/         # Scripts to initialize and launch the Display on boot.
 ├── docs/             # Documentation and help resources.
 ├── tests/            # Unit tests and testing utilities.
+├── CHANGELOG.md      # Log of all changes made to the project.
 └── README.md         # Project overview and instructions.
 ```
 
@@ -78,91 +89,58 @@ project/
 
 #### **Block 1: Initial Setup and API Integration** ✅ Completed
 
-- Set up the project folder structure.
-- Created and updated `README.md` and `LICENSE.md`.
-- Configured the development environment (Python, pip, VS Code settings).
-- Installed dependencies and tested the Queue-Times API.
+- Set up the project folder structure and environment.
+- Tested Queue-Times API integration.
 
-#### **Block 2: Backend Organization and Error Handling** (1 Week)
+#### **Block 2: Backend Organization and Error Handling** ✅ Completed
 
-- Create modules in the `backend/` folder for:
-  - Fetching API data.
-  - Parsing and formatting data.
-  - Error handling and logging.
-- Cache API responses locally to handle errors gracefully.
-- Write unit tests for API-related functions.
-- Document backend architecture in `docs/`.
+- Developed caching and logging systems.
+- Documented backend architecture.
 
-#### **Block 3: Frontend Setup** (1-2 Weeks)
+#### **Block 3: Frontend Setup** ✅ Completed
 
-- Initialize a frontend framework (React.js or Vue.js).
-- Set up basic pages for:
-  - Dashboard display.
-  - Control panel.
-  - Login and user management.
-- Add Tailwind CSS for basic styling.
+- Built foundational dashboard with Parks & Rides page.
+- Added Tailwind CSS for consistent styling.
 
-#### **Block 4: Basic API Integration with Frontend** (1-2 Weeks)
+#### **Block 4: Dashboard-Display Integration** ✅ Completed
 
-- Connect the frontend to the backend API.
-- Fetch and display real-time data in the dashboard.
-- Implement a “last updated” timestamp on the display page.
+- Integrated backend and frontend for park/ride persistence.
+- Created basic Display page with loading animations.
 
-#### **Block 5: Advanced Backend Features** (2 Weeks)
+#### **Block 5: Raspberry Pi Integration** (In Progress)
 
-- Add advanced features to the backend:
-  - Support for park and ride management settings.
-  - Endpoint for statistics tracking (API call success rates, system performance).
-  - Notifications endpoint for system errors and updates.
-- Write additional tests for these features.
+- Auto-launch Display page on boot.
+- Allow manual restarts via Control Panel.
 
-#### **Block 6: Raspberry Pi Integration** (2-3 Weeks)
+#### **Block 6: Advanced Backend Features** (Upcoming)
 
-- Install and configure Raspberry Pi OS.
-- Develop scripts to:
-  - Auto-launch the display program.
-  - Handle control panel commands (e.g., reboot, update).
-- Brainstorm and develop a lightweight Python program to run directly on the Pi without an OS.
-- Test the setup on Raspberry Pi hardware.
+- Add advanced endpoints for statistics and notifications.
 
-#### **Block 7: Advanced Frontend Features** (2-3 Weeks)
+#### **Block 7: Advanced Frontend Features** (Upcoming)
 
-- Implement control panel settings for park/ride management.
-- Add user roles and permissions (Admin/Editor).
-- Develop statistics and notifications pages.
-- Improve theming and responsiveness.
+- Enhance user management, notifications, and themes.
 
-#### **Block 8: Testing and Documentation** (2 Weeks)
+#### **Block 8: Testing and Documentation** (Upcoming)
 
-- Perform end-to-end testing of the entire system.
-- Write detailed documentation for:
-  - Installation and deployment.
-  - User and admin guides.
-  - API usage.
-- Prepare for migration to the production environment.
+- Perform end-to-end testing and complete documentation.
 
-#### **Block 9: Deployment and Release** (1 Week)
+#### **Block 9: Deployment and Release** (Upcoming)
 
-- Migrate the system to a production environment.
-- Optimize for a forkable, open-source release.
-- Publish the project on GitHub with a detailed release note.
-
-#### **Block 10: Post-Release Enhancements** (Ongoing)
-
-- Add features based on user feedback.
-- Implement interactive park maps.
-- Explore advanced notifications and modular widgets.
+- Deploy to Raspberry Pi in production.
+- Release project on GitHub.
 
 ---
 
 ### **Timeline Summary**
 
-- **Blocks 1-4**: Setup and foundational development (4-6 weeks).
-- **Blocks 5-7**: Advanced features and integration (6-8 weeks).
-- **Blocks 8-9**: Testing, documentation, and release (3 weeks).
+- **Blocks 1-4**: Foundational setup and basic functionality.
+- **Blocks 5-6**: Advanced backend and Raspberry Pi integration.
+- **Blocks 7-8**: Frontend enhancement, testing, and documentation.
+- **Block 9**: Deployment and release.
 - **Block 10**: Post-release enhancements (ongoing).
-- **Total Time Estimate**: 13-18 weeks.
+
+---
 
 ### **Future Vision**
 
-The final system will be a polished and user-friendly display and control panel, easily deployable in other environments. It will provide a seamless experience for monitoring Disney park wait times with potential for future expansion into additional features.
+A polished, user-friendly system for displaying Disney park wait times with seamless Raspberry Pi integration. Designed to be modular, scalable, and easy to expand with future features.

@@ -32,3 +32,59 @@
 2024-12-13 11:01:21,562 - INFO - Data fetched successfully for park ID 7.
 2024-12-13 11:01:21,563 - INFO - Performing health check on the API...
 2024-12-13 11:01:21,775 - INFO - Health check passed. API is reachable.
+2024-12-14 17:50:52,216 - INFO - Data saved to cache successfully.
+2024-12-14 17:50:52,227 - INFO - Data loaded from cache successfully.
+2024-12-14 17:50:52,261 - INFO - Fetching data for park ID 7 (Attempt 1)...
+2024-12-14 17:50:52,519 - INFO - Data saved to cache successfully.
+2024-12-14 17:50:52,519 - INFO - Data fetched successfully for park ID 7.
+2024-12-14 17:50:52,520 - INFO - Performing health check on the API...
+2024-12-14 17:50:52,731 - INFO - Health check passed. API is reachable.
+2024-12-14 17:51:48,334 - INFO - Data saved to cache successfully.
+2024-12-14 17:51:48,336 - INFO - Data loaded from cache successfully.
+2024-12-14 17:51:48,336 - INFO - Fetching data for park ID 7 (Attempt 1)...
+2024-12-14 17:51:48,533 - INFO - Data saved to cache successfully.
+2024-12-14 17:51:48,533 - INFO - Data fetched successfully for park ID 7.
+2024-12-14 17:51:48,533 - INFO - Performing health check on the API...
+2024-12-14 17:51:48,777 - INFO - Health check passed. API is reachable.
+2024-12-14 17:52:14,995 - INFO - Data saved to cache successfully.
+2024-12-14 17:52:14,996 - INFO - Data loaded from cache successfully.
+2024-12-14 17:52:14,997 - INFO - Fetching data for park ID 7 (Attempt 1)...
+2024-12-14 17:52:15,184 - INFO - Data saved to cache successfully.
+2024-12-14 17:52:15,184 - INFO - Data fetched successfully for park ID 7.
+2024-12-14 17:52:15,185 - INFO - Performing health check on the API...
+2024-12-14 17:52:15,389 - INFO - Health check passed. API is reachable.
+2024-12-14 17:54:48,948 - INFO - Data saved to cache successfully.
+2024-12-14 17:54:48,949 - INFO - Data loaded from cache successfully.
+2024-12-14 17:54:48,950 - INFO - Fetching data for park ID 7 (Attempt 1)...
+2024-12-14 17:54:49,151 - INFO - Data saved to cache successfully.
+2024-12-14 17:54:49,151 - INFO - Data fetched successfully for park ID 7.
+2024-12-14 17:54:49,152 - INFO - Performing health check on the API...
+2024-12-14 17:54:49,389 - INFO - Health check passed. API is reachable.
+2024-12-14 17:55:55,883 - INFO - Data saved to cache successfully.
+2024-12-14 17:55:55,884 - INFO - Data loaded from cache successfully.
+2024-12-14 17:55:55,884 - INFO - Fetching data for park ID 7 (Attempt 1)...
+2024-12-14 17:55:56,119 - INFO - Data saved to cache successfully.
+2024-12-14 17:55:56,119 - INFO - Data fetched successfully for park ID 7.
+2024-12-14 17:55:56,120 - INFO - Performing health check on the API...
+2024-12-14 17:55:56,479 - INFO - Health check passed. API is reachable.
+2024-12-14 17:59:40,234 - INFO - Data saved to cache successfully.
+2024-12-14 17:59:40,236 - INFO - Data loaded from cache successfully.
+2024-12-14 17:59:40,237 - INFO - Fetching data for park ID 7 (Attempt 1)...
+2024-12-14 17:59:40,428 - INFO - Data saved to cache successfully.
+2024-12-14 17:59:40,428 - INFO - Data fetched successfully for park ID 7.
+2024-12-14 17:59:40,429 - INFO - Performing health check on the API...
+2024-12-14 17:59:40,647 - INFO - Health check passed. API is reachable.
+2024-12-14 18:00:19,870 - INFO - Data saved to cache successfully.
+2024-12-14 18:00:19,871 - INFO - Data loaded from cache successfully.
+2024-12-14 18:00:19,872 - INFO - Fetching data for park ID 7 (Attempt 1)...
+2024-12-14 18:00:20,069 - INFO - Data saved to cache successfully.
+2024-12-14 18:00:20,069 - INFO - Data fetched successfully for park ID 7.
+2024-12-14 18:00:20,070 - INFO - Performing health check on the API...
+2024-12-14 18:00:20,271 - INFO - Health check passed. API is reachable.
+2024-12-14 18:01:46,903 - INFO - Data saved to cache successfully.
+2024-12-14 18:01:46,905 - INFO - Data loaded from cache successfully.
+2024-12-14 18:01:46,906 - INFO - Fetching data for park ID 7 (Attempt 1)...
+2024-12-14 18:01:47,128 - INFO - Data saved to cache successfully.
+2024-12-14 18:01:47,128 - INFO - Data fetched successfully for park ID 7.
+2024-12-14 18:01:47,129 - INFO - Performing health check on the API...
+2024-12-14 18:01:47,327 - INFO - Health check passed. API is reachable.

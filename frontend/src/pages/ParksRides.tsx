@@ -1,78 +1,192 @@
 import { useState, useEffect } from "react";
-import { mockParks } from "../data/mockData";
+import {
+  fetchParks,
+  fetchRidesByPark,
+  saveSelections,
+  fetchSelections,
+} from "../services/apiService";
+
+interface Park {
+  id: number;
+  name: string;
+}
+
+interface Ride {
+  id: number;
+  name: string;
+  wait_time: number;
+  is_open: boolean;
+}
 
 const ParksRides = () => {
-  const [parks] = useState(mockParks);
-  const [selectedParks, setSelectedParks] = useState<string[]>([]);
-  const [selectedRides, setSelectedRides] = useState<{ [parkId: string]: string[] }>({});
+  const [parks, setParks] = useState<Park[]>([]);
+  const [rides, setRides] = useState<Record<number, Ride[]>>({});
+  const [selectedParks, setSelectedParks] = useState<Record<number, boolean>>(
+    {}
+  );
+  const [selectedRides, setSelectedRides] = useState<Record<number, boolean>>(
+    {}
+  );
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // Load selections from localStorage on component mount
   useEffect(() => {
-    const storedParks = localStorage.getItem("selectedParks");
-    const storedRides = localStorage.getItem("selectedRides");
-    if (storedParks) setSelectedParks(JSON.parse(storedParks));
-    if (storedRides) setSelectedRides(JSON.parse(storedRides));
+    const loadParks = async () => {
+      try {
+        const parksData = await fetchParks();
+        setParks(parksData);
+
+        const selections = await fetchSelections();
+        setSelectedParks(selections.parks || {});
+        setSelectedRides(selections.rides || {});
+      } catch (err) {
+        setError("Failed to load parks. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadParks();
   }, []);
 
-  // Toggle park selection and persist it in localStorage
-  const toggleParkSelection = (parkId: string) => {
-    const updatedParks = selectedParks.includes(parkId)
-      ? selectedParks.filter((id) => id !== parkId)
-      : [...selectedParks, parkId];
-    setSelectedParks(updatedParks);
-    localStorage.setItem("selectedParks", JSON.stringify(updatedParks));
+  useEffect(() => {
+    const loadRides = async (parkId: number) => {
+      if (!parkId || parkId <= 0) {
+        console.error("Invalid parkId provided:", parkId);
+        return;
+      }
+
+      try {
+        const ridesData = await fetchRidesByPark(parkId);
+        setRides((prevRides) => ({ ...prevRides, [parkId]: ridesData }));
+      } catch (error) {
+        console.error(`Failed to fetch rides for park ${parkId}:`, error);
+      }
+    };
+
+    Object.keys(selectedParks)
+      .filter((parkId) => selectedParks[parseInt(parkId)])
+      .forEach((parkId) => loadRides(parseInt(parkId)));
+  }, [selectedParks]);
+
+  const handleParkCheckboxChange = (parkId: number) => {
+    setSelectedParks((prevSelectedParks) => {
+      const newSelectedParks = {
+        ...prevSelectedParks,
+        [parkId]: !prevSelectedParks[parkId],
+      };
+
+      if (!newSelectedParks[parkId]) {
+        setRides((prevRides) => {
+          const { [parkId]: _, ...remainingRides } = prevRides;
+          return remainingRides;
+        });
+      }
+
+      return newSelectedParks;
+    });
   };
 
-  // Toggle ride selection for a specific park and persist it
-  const toggleRideSelection = (parkId: string, rideId: string) => {
-    const updatedRides = {
-      ...selectedRides,
-      [parkId]: selectedRides[parkId]?.includes(rideId)
-        ? selectedRides[parkId].filter((id) => id !== rideId)
-        : [...(selectedRides[parkId] || []), rideId],
-    };
-    setSelectedRides(updatedRides);
-    localStorage.setItem("selectedRides", JSON.stringify(updatedRides));
+  const handleRideCheckboxChange = (rideId: number) => {
+    setSelectedRides((prevSelectedRides) => ({
+      ...prevSelectedRides,
+      [rideId]: !prevSelectedRides[rideId],
+    }));
   };
+
+  const saveSettings = async () => {
+    try {
+      await saveSelections({
+        parks: selectedParks,
+        rides: selectedRides,
+      });
+      alert("Selections saved successfully!");
+    } catch (err) {
+      console.error("Failed to save selections:", err);
+      alert("Failed to save selections. Please try again.");
+    }
+  };
+
+  if (loading) {
+    return <div>Loading parks and rides data...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
 
   return (
     <div className="max-w-4xl mx-auto py-8">
-      <h1 className="text-4xl font-bold mb-6 text-center text-blue-800">Parks & Rides</h1>
-      <ul className="space-y-4">
+      <h1 className="text-4xl font-bold mb-6 text-center text-blue-800">
+        Parks & Rides
+      </h1>
+
+      <h2 className="text-2xl font-bold mb-4">Select Parks</h2>
+      <ul className="mb-6">
         {parks.map((park) => (
-          <li key={park.id} className="p-4 shadow rounded-lg bg-white border">
-            {/* Park Header with Checkbox */}
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-semibold">{park.name}</h2>
-              <input
-                type="checkbox"
-                checked={selectedParks.includes(park.id)}
-                onChange={() => toggleParkSelection(park.id)}
-                className="w-6 h-6"
-              />
-            </div>
-            {/* Rides List */}
-            <ul className="mt-4 pl-4">
-              {park.rides.map((ride) => (
-                <li
-                  key={ride.id}
-                  className={`py-2 flex items-center ${
-                    ride.is_open ? "text-green-700" : "text-red-700"
-                  }`}
-                >
-                  <span className="flex-1">{ride.name} ({ride.is_open ? "Open" : "Closed"})</span>
-                  <input
-                    type="checkbox"
-                    checked={selectedRides[park.id]?.includes(ride.id) || false}
-                    onChange={() => toggleRideSelection(park.id, ride.id)}
-                    className="w-6 h-6"
-                  />
-                </li>
-              ))}
-            </ul>
+          <li key={park.id} className="flex items-center">
+            <input
+              type="checkbox"
+              checked={!!selectedParks[park.id]}
+              onChange={() => handleParkCheckboxChange(park.id)}
+              className="mr-2"
+            />
+            <label>{park.name}</label>
           </li>
         ))}
       </ul>
+
+      {Object.keys(rides).length > 0 && (
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Select Rides</h2>
+          {Object.entries(rides).map(([parkId, parkRides]) => (
+            <div key={parkId}>
+              <h3 className="text-xl font-bold mt-4 mb-2">
+                Rides in {parks.find((p) => p.id === parseInt(parkId))?.name}
+              </h3>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {parkRides.map((ride) => (
+                  <li
+                    key={ride.id}
+                    className={`p-6 shadow rounded-lg border cursor-pointer ${
+                      ride.is_open ? "bg-green-50" : "bg-red-50"
+                    }`}
+                    onClick={() => handleRideCheckboxChange(ride.id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xl font-semibold">{ride.name}</h3>
+                      <input
+                        type="checkbox"
+                        checked={!!selectedRides[ride.id]}
+                        onChange={(e) => e.stopPropagation()}
+                        className="cursor-pointer"
+                      />
+                    </div>
+                    <p className="text-sm text-gray-700">
+                      Wait Time:{" "}
+                      <span className="font-bold">{ride.wait_time} minutes</span>
+                    </p>
+                    <p
+                      className={`mt-2 font-medium ${
+                        ride.is_open ? "text-green-700" : "text-red-700"
+                      }`}
+                    >
+                      {ride.is_open ? "Open" : "Closed"}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <button
+        onClick={saveSettings}
+        className="mt-6 p-3 bg-blue-600 text-white rounded shadow hover:bg-blue-700"
+      >
+        Save Selections
+      </button>
     </div>
   );
 };
