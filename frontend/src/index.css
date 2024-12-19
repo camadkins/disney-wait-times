@@ -1,3 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Day Theme */
+.theme-day {
+  @apply bg-white text-gray-900;
+}
+
+.theme-day nav {
+  @apply bg-gradient-to-b from-blue-800 to-blue-600;
+}
+
+.theme-day .shadow {
+  @apply shadow-lg;
+}
+
+/* Night Theme */
+.theme-night {
+  @apply bg-gray-900 text-gray-200;
+}
+
+.theme-night nav {
+  @apply bg-gradient-to-b from-gray-800 to-gray-900;
+}
+
+.theme-night .shadow {
+  @apply shadow-2xl;
+}
+@layer utilities {
+  .bg-night {
+    @apply bg-gray-800 text-gray-200;
+  }
+  .text-night {
+    @apply text-gray-200;
+  }
+  .bg-day {
+    @apply bg-white text-gray-900;
+  }
+  .text-day {
+    @apply text-gray-900;
+  }
+}

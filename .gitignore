@@ -1,4 +1,16 @@
-__pycache__/
+# Node modules
 node_modules/
+
+# Python virtual environment
+venv/
+
+# Environment variables
+.env
+
+# Cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Log files
 *.log
-backend/cache/

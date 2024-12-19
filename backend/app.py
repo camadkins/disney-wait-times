@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, request  # type: ignore
-from flask_cors import CORS  # Import CORS
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from routes.themes import themes_bp
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend requests
@@ -36,7 +37,6 @@ selections = {
     "parks": [1, 2],  # Selected park IDs
     "rides": [1, 2, 3]  # Selected ride IDs
 }
-
 
 @app.route("/parks", methods=["GET"])
 def get_parks():
@@ -85,6 +85,44 @@ def update_selections():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/fetch-display-config", methods=["GET"])
+def fetch_display_config():
+    """
+    Returns mock display configuration data.
+    """
+    return jsonify({
+        "parks": [1, 2],
+        "rides": [1, 2, 3]
+    })
+
+
+# Endpoint for system status
+@app.route('/system-status', methods=['GET'])
+def system_status():
+    """
+    Returns mock system status data.
+    """
+    return jsonify({
+        "cpuUsage": 45,  # Replace with actual system monitoring logic
+        "memoryUsage": 78  # Replace with actual system monitoring logic
+    })
+
+
+# Endpoint for recent logs
+@app.route('/recent-logs', methods=['GET'])
+def recent_logs():
+    """
+    Returns mock log data.
+    """
+    logs = [
+        {"id": 1, "message": "System started successfully", "severity": "info"},
+        {"id": 2, "message": "High CPU usage detected", "severity": "warning"},
+        {"id": 3, "message": "Database connection failed", "severity": "error"}
+    ]
+    return jsonify(logs)
+
+# Register blueprints
+app.register_blueprint(themes_bp, url_prefix="/api")
 
 if __name__ == "__main__":
     app.run(debug=True)

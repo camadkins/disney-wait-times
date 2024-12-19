@@ -1,0 +1,28 @@
+[
+    {
+      "name": "Winter Wonderland",
+      "dayMode": {
+        "textColor": "#000000",
+        "backgroundColor": "#FFFFFF",
+        "accentColor": "#FF0000",
+        "fonts": {
+          "title": "Arial",
+          "customBoxes": "Verdana",
+          "parksRides": "Courier",
+          "status": "Times New Roman"
+        }
+      },
+      "nightMode": {
+        "textColor": "#FFFFFF",
+        "backgroundColor": "#000000",
+        "accentColor": "#00FF00",
+        "fonts": {
+          "title": "Arial",
+          "customBoxes": "Verdana",
+          "parksRides": "Courier",
+          "status": "Times New Roman"
+        }
+      }
+    }
+  ]
+  
